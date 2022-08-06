@@ -20,21 +20,30 @@
       table {
         table-layout: fixed;
         width: inherit !important;
+        color: white;
       }
+      /*.table-bordered>:not(caption)>* {
+        border-width: 1px 1px 0;
+      }
+      */
       td {
+        border: 5px solid rgb(203, 254, 241);
         height: 30px !important;
         width: 70px !important;
-        max-width: 100px !important;
+        max-width: 80px !important;
         max-height: 50px !important;
-        min-width: 100px !important;
+        min-width: 80px !important;
         min-height: 50px !important;
+      }
+      tr {
+        border: 5px white;
       }
       body {
         background-image: url(bg-image.png);
         opacity: 0.7;
-        margin: auto;
+        /* margin: auto;
         width: 1024px;
-        padding: 10px;
+        padding: 10px; */
         background-color: blueviolet;
         font-size: 14px;
         font-family: Verdana;
@@ -42,26 +51,26 @@
     </style>
   </head>
   <body>
-    <div class="container text-center">
+    <div class="container text-center pt-5">
       <h1 class="text-white">Welcome to our Grid Game</h1>
-      <div class="row pt-5">
-        <div class="col-sm-6 bg-dark text-white p-5">
-          Enter the Player name:
+      <div class="row pt-3">
+        <div class="col-sm-5 bg-dark text-white p-5">
+          <h1 class="display-4">TRIES:</h1>
         </div>
-        <div class="col-sm-6 bg-dark text-white p-5">Score:</div>
+        <div class="col-sm-5 bg-dark text-white p-5">
+          <h1 class="display-4 text-center"><span id="score">0</span></h1>
+        </div>
+        <audio
+          id="clickAudio"
+          src="salamisound-6557634-electrical-clock-hum-ring.mp3"
+        ></audio>
+        <audio id="Loose" src="1secsm_63abds894676680.mp3"></audio>
+        <audio src="Win.mp3" id="Winner"></audio>
       </div>
-      <audio
-        id="clickAudio"
-        src="salamisound-6557634-electrical-clock-hum-ring.mp3"
-      ></audio>
-      <audio id="Loose" src="1secsm_63abds894676680.mp3"></audio>
-      <audio src="Win.mp3" id="Winner"></audio>
-      <table
-        class="table table-bordered bg-dark text-white my-5"
-        id="myTable"
-      ></table>
+      <table class="my-5" id="myTable"></table>
     </div>
   </body>
+
   <script>
     var table = document.getElementById("myTable");
 
@@ -77,7 +86,6 @@
     for (var i = 1; i <= 10; i++) {
       var t = tableData.splice(0, 10);
       finalData.push(t);
-
     }
     var score = 0;
     for (var i = 0; i <= 9; i++) {
@@ -86,30 +94,39 @@
       for (var j = 0; j <= 9; j++) {
         var td = document.createElement("td");
         tr.appendChild(td);
-        td.innerText = finalData[i][j];
-
+        // td.innerText = finalData[i][j];
+        td.id = finalData[i][j];
         td.addEventListener("click", function (event) {
-          var cellvalue = event.target.innerText;
+          var cellvalue = event.target.id;
           console.log(cellvalue);
-          //document.getElementById("clickAudio").play();
-          console.log(document.getElementById("clickAudio"));
-          
+
           var bombs = [2, 3, 5, 7];
 
           if (bombs.includes(+cellvalue) == true) {
             document.getElementById("Loose").play();
             alert("You Lost the Game. Game Over");
             window.location.reload();
-            
           } else if (+cellvalue == 1) {
             score = score + 1;
+            document.getElementById("score").innerText = score;
             document.getElementById("Winner").play();
             alert("YOU WON THE GAME! HURRAY!!" + score);
-            
+            window.location.reload();
           } else {
+            for (var i = 0; i < 10; i++) {
+              for (var j = 0; j < 10; j++) {
+                if (finalData[i][j] % cellvalue == 0) {
+                  var cell = document.getElementById(finalData[i][j]);
+                  //cell.innerText="";
+                  cell.style.backgroundImage = "url(brick.img)";
+                  cell.style.backgroundSize = "100%";
+                }
+              }
+            }
             console.log("KEEP PLAYING!!!");
             document.getElementById("clickAudio").play();
-            score = score + 1; 
+            score = score + 1;
+            document.getElementById("score").innerText = score;
           }
         });
       }
